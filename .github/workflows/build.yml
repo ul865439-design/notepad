@@ -3,8 +3,6 @@ name: Build APK
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -23,38 +21,14 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug --stacktrace
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: notepad-debug-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
-        
-    - name: Create Release
-      if: github.event_name == 'workflow_dispatch'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: app/build/outputs/apk/debug/app-debug.apk
-        tag_name: v${{ github.run_number }}
-        name: Notepad v${{ github.run_number }}
-        body: |
-          Android 16 兼容版记事本应用
-          - Target SDK: 36 (Android 16)
-          - Min SDK: 24 (Android 7.0)
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        path: app/build/outputs/apk/debug/*.apk
