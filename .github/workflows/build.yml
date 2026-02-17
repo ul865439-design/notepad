@@ -24,11 +24,12 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build with Gradle
+    - name: Build Debug APK
       run: ./gradlew assembleDebug --stacktrace
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: notepad-debug-apk
         path: app/build/outputs/apk/debug/*.apk
