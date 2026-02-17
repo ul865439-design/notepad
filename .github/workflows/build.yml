@@ -1,4 +1,4 @@
-name: Build APK
+name: Build and Release APK
 
 on:
   push:
@@ -24,13 +24,25 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Clean and Build Debug APK
+    - name: Create local.properties
+      run: echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
+      
+    - name: Build Debug APK
       run: |
         ./gradlew clean
         ./gradlew assembleDebug
       
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
+    - name: Upload APK to Release
+      uses: softprops/action-gh-release@v1
       with:
-        name: notepad-debug-apk
-        path: app/build/outputs/apk/debug/
+        files: app/build/outputs/apk/debug/app-debug.apk
+        tag_name: v1.0
+        name: Notepad v1.0
+        body: |
+          Android 16 兼容版记事本应用
+          
+          - 支持 Android 7.0+
+          - Material Design 3 界面
+          - 本地存储笔记
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
