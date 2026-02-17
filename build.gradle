@@ -13,10 +13,3 @@ buildscript {
         classpath 'org.jetbrains.kotlin:kotlin-serialization:1.9.22'
     }
 }
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
