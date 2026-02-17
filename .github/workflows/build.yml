@@ -24,14 +24,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Create local.properties
-      run: echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-      
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
-      
-    - name: List output files
-      run: ls -la app/build/outputs/apk/debug/
+    - name: Clean and Build Debug APK
+      run: |
+        ./gradlew clean
+        ./gradlew assembleDebug
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
